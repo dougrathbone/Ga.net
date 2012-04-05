@@ -18,6 +18,7 @@
 */
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -75,10 +76,52 @@ namespace GaDotNet.Common
 		/// <param name="request">The request.</param>
 		public static void FireTrackingEvent(TrackingRequest request)
 		{
-
-			//send the request to google
-			WebRequest requestForGaGif = WebRequest.Create(request.TrackingGifUri);
-			WebResponse response = requestForGaGif.GetResponse();
+            WebRequest requestForGaGif = WebRequest.Create(request.TrackingGifUri);
+            requestForGaGif.BeginGetResponse(r =>
+            {
+                try
+                {
+                    var reponse = requestForGaGif.EndGetResponse(r);
+                    //ignore response
+                }
+                catch
+                {
+                    //suppress error
+                }
+            }, null);
 		}
-	}
+
+
+        private static void ResponseCallback(IAsyncResult result)
+        {
+           
+        }
+
+
+      
+        }
+
+
+
+
+
+        public class RequestState
+        {
+            public int BufferSize { get; private set; }
+            public StringBuilder ResponseContent { get; set; }
+            public byte[] BufferRead { get; set; }
+            public HttpWebRequest Request { get; set; }
+            public HttpWebResponse Response { get; set; }
+            public Stream ResponseStream { get; set; }
+
+            public RequestState()
+            {
+                BufferSize = 1024;
+                BufferRead = new byte[BufferSize];
+                ResponseContent = new StringBuilder();
+                Request = null;
+                ResponseStream = null;
+            }
+        }
+
 }
