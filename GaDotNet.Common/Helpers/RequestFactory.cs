@@ -3,9 +3,10 @@
  * Copyright 2010 Doug Rathbone
  * http://www.diaryofaninja.com
  * 
- * Modifications Copyright 2012 Erik Weiss
- * http://www.technicallyerik.com
- * 
+ * Modifications by Erik Weiss
+ * Copyright 2012 The Nerdery
+ * http://www.nerdery.com/
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
