@@ -3,6 +3,10 @@
  * Copyright 2010 Doug Rathbone
  * http://www.diaryofaninja.com
  * 
+ * Modifications by Erik Weiss
+ * Copyright 2012 The Nerdery
+ * http://www.nerdery.com/
+ * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -16,6 +20,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,13 +53,14 @@ namespace GaDotNet.Common.Data
 
 		public GoogleEvent TrackingEvent;
 		public GoogleTransaction TrackingTransaction;
-
+        public List<GoogleCustomVar> CustomVariables;
+        public GoogleUserTiming CustomTiming;
 
 		public string AnalyticsAccountCode;
 
 		//private string rand1 = new Random().Next(10000).ToString();
 		private string timeStampCurrent = GoogleHashHelper.ConvertToUnixTimestamp(DateTime.Now).ToString();
-		private string visitCount = "2";		
+		private string visitCount = "1";		
 
 		protected internal TrackingRequest()
 		{
@@ -97,12 +103,12 @@ namespace GaDotNet.Common.Data
 		{
 			get
 			{
-				if (TrackingEvent != null)
+				if (TrackingEvent != null || CustomTiming != null /* if you attach timing, even to a page view, it has to come in as an event */)
 					return "event";
 				if (TrackingTransaction != null)
 					return "transaction";
 
-				return "page";
+				return null;
 			}
 		}
 
@@ -157,7 +163,7 @@ namespace GaDotNet.Common.Data
 
 				List<KeyValuePair<string, string>> paramList = new List<KeyValuePair<string, string>>
 				{
-					new KeyValuePair<string,string>("utmwv","4.7.2"),										// Analytics version
+					new KeyValuePair<string,string>("utmwv","5.3.6"),										// Analytics version
 					new KeyValuePair<string,string>("utmn",randomNumber.Next(1000000000).ToString()),	// Random request number
 					new KeyValuePair<string,string>("utmhn",PageDomain),								// Your domain name
 					new KeyValuePair<string,string>("utmcs","UTF-8"),									// Document encoding
@@ -167,13 +173,17 @@ namespace GaDotNet.Common.Data
 					new KeyValuePair<string,string>("utmje","0"),										// java enabled or not
 					new KeyValuePair<string,string>("utmfl","-"),										// user flash version
 					new KeyValuePair<string,string>("utmdt",Uri.EscapeDataString(PageTitle)),			// page title
-					new KeyValuePair<string,string>("utmhid",randomNumber.Next(1000000000).ToString()),										// page title
+					new KeyValuePair<string,string>("utmhid",randomNumber.Next(1000000000).ToString()),	// A random number used to link Analytics GIF requests with AdSense
 					new KeyValuePair<string,string>("utmr","-"),											// referrer URL
 					new KeyValuePair<string,string>("utmp",PageUrl),									// document page URL (relative to root)
 					new KeyValuePair<string,string>("utmac",AnalyticsAccountCode),						// Your GA account code
-					new KeyValuePair<string,string>("utmcc",UtmcCookieString),					// cookie string (encoded)
-					new KeyValuePair<string,string>("utmt",UtmtRequestType)						// type of request (page view or event etc)
+					new KeyValuePair<string,string>("utmcc",UtmcCookieString)					// cookie string (encoded)					
 				};
+
+                if (UtmtRequestType != null)
+                    paramList.Add(new KeyValuePair<string, string>("utmt", UtmtRequestType)); // type of request (page view or event etc)
+
+                string utme = String.Empty;
 
 				//check if our tracking event is null and if not add to the params
 				if (TrackingEvent!=null)
@@ -181,14 +191,47 @@ namespace GaDotNet.Common.Data
 					TrackingEvent.Validate();
 
 					//taken from http://code.google.com/apis/analytics/docs/tracking/gaTrackingTroubleshooting.html
-					string eventString = String.Format("5({0}*{1}*{2})({3}",
+					utme += String.Format("5({0}*{1}*{2})({3})",
 						TrackingEvent.Category,
 						TrackingEvent.Action,
 						TrackingEvent.Label,
 						TrackingEvent.Value
 						);
-					paramList.Add(new KeyValuePair<string, string>("utme", Uri.EscapeDataString(eventString)));
+					
 				}
+
+                if (CustomTiming != null)
+                {
+                    CustomTiming.Validate();
+
+                    utme += String.Format("14(90!{1}*{0}*{2}*{3})(90!{2})",
+                        CustomTiming.Category,
+                        CustomTiming.Variable,
+                        CustomTiming.Time,
+                        CustomTiming.Label
+                        );
+                }
+
+                if (CustomVariables != null && CustomVariables.Count > 0)
+                {
+                    if (CustomVariables.Count > 5)
+                        throw new Exception("Google Analytics only supports 5 custom variables.");
+
+                    foreach (var customVariable in CustomVariables)
+                    {
+                        customVariable.Validate();
+                    }
+
+                    string names = string.Join("*", (from v in CustomVariables select v.Name).ToArray());
+                    string values = string.Join("*", (from v in CustomVariables select v.Value).ToArray());
+                    
+                    utme += String.Format("8({0})9({1})", names, values);
+                }
+
+                if (!string.IsNullOrEmpty(utme))
+                {
+                    paramList.Add(new KeyValuePair<string, string>("utme", Uri.EscapeDataString(utme)));
+                }
 
 				//check if the transaction object is null and if not add the transaction params
 				if (TrackingTransaction!=null)
@@ -230,10 +273,6 @@ namespace GaDotNet.Common.Data
 					paramList.Add(new KeyValuePair<string, string>("utmttx", TrackingTransaction.TaxCost.ToString("#.##")));
 				}
 
-
-
-
-
 				//get final param string
 				StringBuilder GaParams = new StringBuilder();
 				foreach (KeyValuePair<string, string> pair in paramList)
@@ -243,14 +282,11 @@ namespace GaDotNet.Common.Data
 				string paramsFinal = GaParams.ToString();
 				paramsFinal = paramsFinal.Substring(0, paramsFinal.Length - 1);
 
-
 				//return the google gif plus all our params
 				return String.Format("http://www.google-analytics.com/__utm.gif?{0}",
 									 paramsFinal);
 			}
 		}
-		
-
 		#endregion
 	}
 }

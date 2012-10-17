@@ -3,6 +3,10 @@
  * Copyright 2010 Doug Rathbone
  * http://www.diaryofaninja.com
  * 
+ * Modifications by Erik Weiss
+ * Copyright 2012 The Nerdery
+ * http://www.nerdery.com/
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -55,7 +59,7 @@ namespace GaDotNet.Common.Helpers
 		/// </summary>
 		/// <param name="pageView">The page view.</param>
 		/// <returns></returns>
-		public TrackingRequest BuildRequest(GaDotNet.Common.Data.GooglePageView pageView)
+        public TrackingRequest BuildRequest(GaDotNet.Common.Data.GooglePageView pageView, GaDotNet.Common.Data.GoogleUserTiming googleTiming = null, List<GaDotNet.Common.Data.GoogleCustomVar> customVariables = null)
 		{
 			var r = new TrackingRequest();
 
@@ -63,6 +67,8 @@ namespace GaDotNet.Common.Helpers
 			r.PageDomain = pageView.DomainName;
 			r.AnalyticsAccountCode = ConfigurationSettings.GoogleAccountCode;
 			r.PageUrl = pageView.Url;
+            r.CustomTiming = googleTiming;
+            r.CustomVariables = customVariables;
 
 			return r;
 		}
@@ -73,13 +79,15 @@ namespace GaDotNet.Common.Helpers
 		/// </summary>
 		/// <param name="googleEvent">The google event.</param>
 		/// <returns></returns>
-		public TrackingRequest BuildRequest(GaDotNet.Common.Data.GoogleEvent googleEvent)
+        public TrackingRequest BuildRequest(GaDotNet.Common.Data.GoogleEvent googleEvent, GaDotNet.Common.Data.GoogleUserTiming googleTiming = null, List<GaDotNet.Common.Data.GoogleCustomVar> customVariables = null)
 		{
 			var r = new TrackingRequest();
 			
 			r.AnalyticsAccountCode = ConfigurationSettings.GoogleAccountCode;
 			r.TrackingEvent = googleEvent;
-			
+            r.CustomTiming = googleTiming;
+            r.CustomVariables = customVariables;
+
 			return r;
 		}
 

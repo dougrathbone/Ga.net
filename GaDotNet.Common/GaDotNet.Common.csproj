@@ -41,9 +41,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\ConfigurationSettings.cs" />
+    <Compile Include="Data\GoogleCustomVar.cs" />
     <Compile Include="Data\GoogleEvent.cs" />
     <Compile Include="Data\GooglePageView.cs" />
     <Compile Include="Data\GoogleTransaction.cs" />
+    <Compile Include="Data\GoogleUserTiming.cs" />
     <Compile Include="Data\TrackingRequest.cs" />
     <Compile Include="Helpers\GoogleHashHelper.cs" />
     <Compile Include="Helpers\RequestFactory.cs" />
