@@ -177,8 +177,6 @@ namespace GaDotNet.Common.Data
 				//check if our tracking event is null and if not add to the params
 				if (TrackingEvent!=null)
 				{
-					TrackingEvent.Validate();
-
 					//taken from http://code.google.com/apis/analytics/docs/tracking/gaTrackingTroubleshooting.html
 					string eventString = String.Format("5({0}*{1}*{2})({3}",
 						TrackingEvent.Category,
