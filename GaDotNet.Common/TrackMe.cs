@@ -23,8 +23,6 @@ namespace GaDotNet.Common
 {
 	public class TrackMe : IHttpHandler
 	{
-		#region IHttpHandler Members
-
 		public bool IsReusable
 		{
 			get { return true; }
@@ -38,19 +36,20 @@ namespace GaDotNet.Common
 		//  "ua" = Google analytics account code
 		//  "url" = URL of page to track (format is from root: "/default.htm)
 		/// </summary>
-		/// <param name="context">An <see cref="T:System.Web.HttpContext"/> object that provides references to the intrinsic server objects (for example, Request, Response, Session, and Server) used to service HTTP requests.</param>
+		/// <param name="context">
+		/// An <see cref="T:System.Web.HttpContext"/> object that provides
+		/// references to the intrinsic server objects (for example, Request,
+		/// Response, Session, and Server) used to] service HTTP requests.
+		/// </param>
 		public void ProcessRequest(HttpContext context)
 		{
 			// takes in the following querystring elements:
 			// "pagetitle" = Page title
 			// "domain" = Domain (usually facebook.com)
 			// "ua" = Google analytics account code
-			// "url" = URL of page to track (format is from root: "/default.htm)
+			// "url" = URL of page to track (format is from root: "/default.htm")
 
-			Common.GoogleTracking.TrackPageViewWithImage(context);
+			GoogleTracking.TrackPageViewWithImage(context);
 		}
-
-
-		#endregion
 	}
 }
