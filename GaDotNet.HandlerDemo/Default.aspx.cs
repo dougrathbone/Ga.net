@@ -28,63 +28,47 @@ using GaDotNet.Common.Helpers;
 
 namespace GaDotNet.HandlerDemo
 {
+	public static class AccountID
+	{
+		public static string value = "UA-4040403-8";
+	}
+
 	public partial class Demo : System.Web.UI.Page
 	{
-		protected void Page_Load(object sender, EventArgs e)
+		protected void btnPageSubmit_Click(object sender, EventArgs e)
 		{
-
-		}
-
-		protected void btnPageSubmit_Click (object sender, EventArgs e)
-		{
-			var pageView = new GooglePageView (
+			GooglePageView pageView = new GooglePageView (
 				txtPageTitle.Text,
 				txtPageDomainName.Text,
 				txtPageURL.Text);
 
-			TrackingRequest request = new RequestFactory ().BuildRequest (pageView);
+			TrackingRequest request = new RequestFactory()
+				.BuildRequest (pageView);
 			GoogleTracking.FireTrackingEvent(request);
 
 			divAction.InnerText = "Page view successfully tracked";
 			divAction.Visible = true;
 		}
+		
+		protected void btnEventSubmit_Click (object sender, EventArgs e)
+		{
+			int parsed;
+			bool found = int.TryParse(txtEventValue.Text, out parsed);
+			int? eventValue = found ? parsed : (int?)null;
 
+			GoogleEvent eventToTrack = new GoogleEvent (
+				txtEventDomain.Text,
+				txtEventCategory.Text,
+				txtEventAction.Text,
+				txtEventLabel.Text,
+				eventValue);
 
-		#region Under Development & Testing
-		//protected void btnEventSubmit_Click(object sender, EventArgs e)
-		//{
-		//    GoogleEvent eventToTrack = new GoogleEvent(txtEventCategory.Text, 
-		//        txtEventAction.Text, 
-		//        txtEventLabel.Text, 
-		//        int.Parse(txtEventValue.Text));
+			TrackingRequest request = new RequestFactory()
+				.BuildRequest (eventToTrack);
+			GoogleTracking.FireTrackingEvent(request);
 
-		//    TrackingRequest request = new RequestFactory().BuildRequest(eventToTrack);
-		//    GoogleTracking.FireTrackingEvent(request);
-
-		//    divAction.InnerText = "Event successfully tracked";
-		//    divAction.Visible = true;
-		//}
-
-		//protected void btnTransactionSubmit_Click(object sender, EventArgs e)
-		//{
-		//    GoogleTransaction transaction = new GoogleTransaction(txtTransactionProdName.Text,
-		//        txtTransactionProdSku.Text,
-		//        txtTransactionOrderID.Text,
-		//        txtTransactionAffiliation.Text,
-		//        decimal.Parse(txtTransactionTotalCost.Text),
-		//        decimal.Parse(txtTransactionTaxCost.Text),
-		//        decimal.Parse(txtTransactionShippingCost.Text),
-		//        txtTransactionCity.Text,
-		//        txtTransactionState.Text,
-		//        txtTransactionCounty.Text
-		//        );
-
-		//    TrackingRequest request = new RequestFactory().BuildRequest(transaction);
-		//    GoogleTracking.FireTrackingEvent(request);
-
-		//    divAction.InnerText = "Transaction successfully tracked";
-		//    divAction.Visible = true;
-		//}
-		#endregion
+			divAction.InnerText = "Event successfully tracked";
+			divAction.Visible = true;
+		}
 	}
 }
