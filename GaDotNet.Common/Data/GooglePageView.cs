@@ -24,9 +24,7 @@ namespace GaDotNet.Common.Data
 	public class GooglePageView
 	{
 		public string PageTitle { get; private set; }
-
 		public string DomainName { get; private set; }
-
 		public string Url { get; private set; }
 
 		/// <summary>
@@ -37,30 +35,19 @@ namespace GaDotNet.Common.Data
 		/// <param name="url">The URL. (required)</param>
 		public GooglePageView(string pageTitle, string domainName, string url)
 		{
+			if (String.IsNullOrEmpty (pageTitle)) {
+				throw new Exception ("'PageTitle' is a required field");
+			}
+			if (String.IsNullOrEmpty (domainName)) {
+				throw new Exception ("'DomainName' is a required field");
+			}
+			if (String.IsNullOrEmpty (url)) {
+				throw new Exception ("'Url' is a required field");
+			}
+
 			PageTitle = pageTitle;
 			DomainName = domainName;
 			Url = url;
-
-			Validate();
-		}
-
-		/// <summary>
-		/// Validates this instance.
-		/// </summary>
-		public void Validate()
-		{
-			if (String.IsNullOrEmpty(PageTitle))
-			{
-				throw new Exception("'PageTitle' is a required field");
-			}
-			if (String.IsNullOrEmpty(DomainName))
-			{
-				throw new Exception("'DomainName' is a required field");
-			}
-			if (String.IsNullOrEmpty(Url))
-			{
-				throw new Exception("'Url' is a required field");
-			}
 		}
 	}
 }
