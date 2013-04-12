@@ -153,6 +153,9 @@ namespace GaDotNet.Common.Data
 				// REQUEST URL FORMAT:
 				// http://www.google-analytics.com/__utm.gif?utmwv=4.6.5&utmn=488134812&utmhn=facebook.com&utmcs=UTF-8&utmsr=1024x576&utmsc=24-bit&utmul=en-gb&utmje=0&utmfl=10.0%20r42&utmdt=Facebook%20Contact%20Us&utmhid=700048481&utmr=-&utmp=%2Fwebdigi%2Fcontact&utmac=UA-3659733-5&utmcc=__utma%3D155417661.474914265.1263033522.1265456497.1265464692.6%3B%2B__utmz%3D155417661.1263033522.1.1.utmcsr%3D(direct)%7Cutmccn%3D(direct)%7Cutmcmd%3D(none)%3B
 
+				var pageTitleSafe = PageTitle != null
+					? Uri.EscapeDataString (PageTitle)
+					: string.Empty;
 
 				List<KeyValuePair<string, string>> paramList = new List<KeyValuePair<string, string>>
 				{
@@ -165,7 +168,7 @@ namespace GaDotNet.Common.Data
 					new KeyValuePair<string,string>("utmul","-"),										// user language
 					new KeyValuePair<string,string>("utmje","0"),										// java enabled or not
 					new KeyValuePair<string,string>("utmfl","-"),										// user flash version
-					new KeyValuePair<string,string>("utmdt",Uri.EscapeDataString(PageTitle)),			// page title
+					new KeyValuePair<string,string>("utmdt",Uri.EscapeDataString (pageTitleSafe)),				// page title
 					new KeyValuePair<string,string>("utmhid",randomNumber.Next(1000000000).ToString()),										// page title
 					new KeyValuePair<string,string>("utmr","-"),											// referrer URL
 					new KeyValuePair<string,string>("utmp",PageUrl),									// document page URL (relative to root)
