@@ -35,12 +35,14 @@ namespace GaDotNet.HandlerDemo
 
 		}
 
-		protected void btnPageSubmit_Click(object sender, EventArgs e)
+		protected void btnPageSubmit_Click (object sender, EventArgs e)
 		{
-			GooglePageView pageView = new GooglePageView(txtPageTitle.Text,
+			var pageView = new GooglePageView (
+				txtPageTitle.Text,
 				txtPageDomainName.Text,
 				txtPageURL.Text);
-			TrackingRequest request = new RequestFactory().BuildRequest(pageView);
+
+			TrackingRequest request = new RequestFactory ().BuildRequest (pageView);
 			GoogleTracking.FireTrackingEvent(request);
 
 			divAction.InnerText = "Page view successfully tracked";
