@@ -33,16 +33,17 @@ namespace GaDotNet.Common.Helpers
 		/// <param name="context">The HTTP context.</param>
 		/// <param name="urlToTrack">The URL to track.</param>
 		/// <returns></returns>
-		public TrackingRequest BuildRequest(HttpContext context)
+		public TrackingRequest BuildRequest (HttpContext context)
 		{
-			var r = new TrackingRequest();
+			var code = context.Request.QueryString["ua"]
+				?? ConfigurationSettings.GoogleAccountCode;
 
-			r.PageTitle = context.Request.QueryString["pagetitle"];
-			r.PageDomain = context.Request.QueryString["domain"];
-			r.AnalyticsAccountCode = context.Request.QueryString["ua"] ?? ConfigurationSettings.GoogleAccountCode;
-			r.PageUrl = context.Request.QueryString["url"];
-
-			return r;
+			return new TrackingRequest {
+				PageTitle = context.Request.QueryString["pagetitle"],
+				PageDomain = context.Request.QueryString["domain"],
+				PageUrl = context.Request.QueryString["url"],
+				AnalyticsAccountCode = code,
+			};
 		}
 
 		/// <summary>
@@ -50,16 +51,16 @@ namespace GaDotNet.Common.Helpers
 		/// </summary>
 		/// <param name="pageView">The page view.</param>
 		/// <returns></returns>
-		public TrackingRequest BuildRequest(GaDotNet.Common.Data.GooglePageView pageView)
+		public TrackingRequest BuildRequest (GooglePageView pageView)
 		{
-			var r = new TrackingRequest();
+			var code = ConfigurationSettings.GoogleAccountCode;
 
-			r.PageTitle = pageView.PageTitle;
-			r.PageDomain = pageView.DomainName;
-			r.AnalyticsAccountCode = ConfigurationSettings.GoogleAccountCode;
-			r.PageUrl = pageView.Url;
-
-			return r;
+			return new TrackingRequest {
+				PageDomain = pageView.DomainName,
+				PageTitle = pageView.PageTitle,
+				PageUrl = pageView.Url,
+				AnalyticsAccountCode = code
+			};
 		}
 
 
@@ -68,14 +69,15 @@ namespace GaDotNet.Common.Helpers
 		/// </summary>
 		/// <param name="googleEvent">The google event.</param>
 		/// <returns></returns>
-		public TrackingRequest BuildRequest(GaDotNet.Common.Data.GoogleEvent googleEvent)
+		public TrackingRequest BuildRequest (GoogleEvent googleEvent)
 		{
-			var r = new TrackingRequest();
-			
-			r.AnalyticsAccountCode = ConfigurationSettings.GoogleAccountCode;
-			r.TrackingEvent = googleEvent;
-			
-			return r;
+			var code = ConfigurationSettings.GoogleAccountCode;
+
+			return new TrackingRequest {
+				TrackingEvent = googleEvent,
+				PageDomain = googleEvent.DomainName,
+				AnalyticsAccountCode = code
+			};
 		}
 
 		/// <summary>
@@ -83,14 +85,12 @@ namespace GaDotNet.Common.Helpers
 		/// </summary>
 		/// <param name="googleTransaction">The google transaction.</param>
 		/// <returns></returns>
-		public TrackingRequest BuildRequest(GaDotNet.Common.Data.GoogleTransaction googleTransaction)
+		public TrackingRequest BuildRequest (GoogleTransaction googleTransaction)
 		{
-			var r = new TrackingRequest();
-
-			r.AnalyticsAccountCode = ConfigurationSettings.GoogleAccountCode;
-			r.TrackingTransaction = googleTransaction;
-
-			return r;
+			return new TrackingRequest {
+				AnalyticsAccountCode = ConfigurationSettings.GoogleAccountCode,
+				TrackingTransaction = googleTransaction
+			};
 		}
 	}
 }
