@@ -24,29 +24,17 @@ namespace GaDotNet.Common.Data
 	public class GoogleTransaction
 	{
 		public string ProductName { get; set; }
-
 		public string ProductSku { get; set; }
-
 		public string ProductVariant { get; set; }
-
 		public decimal UnitPrice { get; set; }
-
 		public int Quantity { get; set; }
-		
 		public string OrderID { get; set; }
-
 		public string Affiliation { get; set; }
-
 		public decimal TotalCost { get; set; }
-
 		public decimal TaxCost { get; set; }
-
 		public decimal ShippingCost { get; set; }
-
 		public string City { get; set; }
-
 		public string State { get; set; }
-
 		public string Country { get; set; }
 
 		/// <summary>
@@ -65,54 +53,32 @@ namespace GaDotNet.Common.Data
 		public GoogleTransaction(string productName, string productSku, string orderID, string affiliation, 
 			decimal totalCost, decimal taxCost, decimal shippingCost, string city, string state, string country)
 		{
+			if (String.IsNullOrEmpty (orderID)) {
+				throw new Exception ("'OrderID' is a required field");
+			}
+			if (String.IsNullOrEmpty (affiliation)) {
+				throw new Exception ("'Affiliation' is a required field");
+			}
+			if (String.IsNullOrEmpty (city)) {
+				throw new Exception ("'City' is a required field");
+			}
+			if (String.IsNullOrEmpty (state)) {
+				throw new Exception ("'State' is a required field");
+			}
+			if (String.IsNullOrEmpty (country)) {
+				throw new Exception ("'Country' is a required field");
+			}
+
 			ProductName = productName;
-
 			ProductSku = productSku;
-
 			OrderID = orderID;
-
 			Affiliation = affiliation;
-
 			TotalCost = totalCost;
-
 			TaxCost = taxCost;
-
 			ShippingCost = shippingCost;
-
 			City = city;
-
 			State = state;
-
 			Country = country;
-
-			Validate();
-		}
-
-		/// <summary>
-		/// Validates this instance.
-		/// </summary>
-		public void Validate()
-		{
-			if (String.IsNullOrEmpty(OrderID))
-			{
-				throw new Exception("'OrderID' is a required field");
-			}
-			if (String.IsNullOrEmpty(Affiliation))
-			{
-				throw new Exception("'Affiliation' is a required field");
-			}
-			if (String.IsNullOrEmpty(City))
-			{
-				throw new Exception("'City' is a required field");
-			}
-			if (String.IsNullOrEmpty(State))
-			{
-				throw new Exception("'State' is a required field");
-			}
-			if (String.IsNullOrEmpty(Country))
-			{
-				throw new Exception("'Country' is a required field");
-			}
 		}
 	}
 }
