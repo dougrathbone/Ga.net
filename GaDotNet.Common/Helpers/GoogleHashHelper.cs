@@ -21,21 +21,18 @@ using System;
 
 namespace GaDotNet.Common.Helpers
 {
-	class GoogleHashHelper
+	public static class GoogleHashHelper
 	{
 		/// <summary>
-		/// Converts a DateTime to a UNIX timestamp.
+		/// Converts a DateTime to a UNIX timestamp in local time.
 		/// </summary>
-		/// <param name="value">The value.</param>
-		/// <returns></returns>
-		public static int ConvertToUnixTimestamp(DateTime value)		
+		/// <param name="value">The DateTime to convert to unix time</param>
+		/// <returns>Timestamp in local unix time</returns>
+		public static uint ConvertToUnixTimestamp (DateTime value)
 		{
-			//create Timespan by subtracting the value provided from
-			//the Unix Epoch
-			TimeSpan span = (value - new DateTime(1970, 1, 1, 0, 0, 0, 0).ToLocalTime());
-		
-			//return the total seconds (which is a UNIX timestamp)
-			return (int)span.TotalSeconds;
+			// Unix time is seconds since August 1st, 1970
+			TimeSpan span = (value - new DateTime (1970, 1, 1).ToLocalTime());
+			return (uint)span.TotalSeconds;
 		} 
 	}
 }
