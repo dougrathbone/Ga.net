@@ -42,6 +42,7 @@ namespace GaDotNet.Common
 			ShowTrackingImage(context);
 
 		}
+
 		/// <summary>
 		/// Tracks the page view and streams a GIF image.
 		/// </summary>
@@ -57,18 +58,18 @@ namespace GaDotNet.Common
 			ShowTrackingImage(context);
 		}
 
-		private static void ShowTrackingImage(HttpContext context)
+		private static void ShowTrackingImage (HttpContext context)
 		{
 			context.Response.ContentType = "image/gif";
 			context.Response.TransmitFile(context.Server.MapPath("spacer.gif"));
 			context.Response.End();
-
 		}
+
 		/// <summary>
 		/// Fires the tracking event with Google Analytics
 		/// </summary>
 		/// <param name="request">The request.</param>
-		public static void FireTrackingEvent(TrackingRequest request)
+		public static void FireTrackingEvent (TrackingRequest request)
 		{
 			//Create a request for the Google Analytics GIF
             var gifRequest = WebRequest
