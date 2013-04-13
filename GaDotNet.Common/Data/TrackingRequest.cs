@@ -193,7 +193,6 @@ namespace GaDotNet.Common.Data
 				//check if the transaction object is null and if not add the transaction params
 				if (TrackingTransaction!=null)
 				{
-					TrackingTransaction.Validate();
 					//taken from http://code.google.com/apis/analytics/docs/tracking/gaTrackingTroubleshooting.html
 
 					//add product name
