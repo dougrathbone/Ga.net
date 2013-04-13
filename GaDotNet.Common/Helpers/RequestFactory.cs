@@ -17,12 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Web;
-using GaDotNet.Common.Data;
 using GaDotNet.Common.Data;
 
 namespace GaDotNet.Common.Helpers
@@ -32,22 +27,30 @@ namespace GaDotNet.Common.Helpers
 	/// </summary>
 	public class RequestFactory
 	{
+		private readonly string googleAnalyticsCode;
+
+		public RequestFactory(string googleAnalyticsCode)
+		{
+			this.googleAnalyticsCode = googleAnalyticsCode;
+		}
+
 		/// <summary>
 		/// Builds the tracking request.
 		/// </summary>
 		/// <param name="context">The HTTP context.</param>
 		/// <param name="urlToTrack">The URL to track.</param>
 		/// <returns></returns>
-		public TrackingRequest BuildRequest(HttpContext context)
+		public TrackingRequest BuildRequest (HttpContext context)
 		{
-			var r = new TrackingRequest();
+			var code = context.Request.QueryString["ua"]
+				?? googleAnalyticsCode;
 
-			r.PageTitle = context.Request.QueryString["pagetitle"];
-			r.PageDomain = context.Request.QueryString["domain"];
-			r.AnalyticsAccountCode = context.Request.QueryString["ua"] ?? ConfigurationSettings.GoogleAccountCode;
-			r.PageUrl = context.Request.QueryString["url"];
-
-			return r;
+			return new TrackingRequest {
+				PageTitle = context.Request.QueryString["pagetitle"],
+				PageDomain = context.Request.QueryString["domain"],
+				PageUrl = context.Request.QueryString["url"],
+				AnalyticsAccountCode = code,
+			};
 		}
 
 		/// <summary>
@@ -55,32 +58,28 @@ namespace GaDotNet.Common.Helpers
 		/// </summary>
 		/// <param name="pageView">The page view.</param>
 		/// <returns></returns>
-		public TrackingRequest BuildRequest(GaDotNet.Common.Data.GooglePageView pageView)
+		public TrackingRequest BuildRequest (GooglePageView pageView)
 		{
-			var r = new TrackingRequest();
-
-			r.PageTitle = pageView.PageTitle;
-			r.PageDomain = pageView.DomainName;
-			r.AnalyticsAccountCode = ConfigurationSettings.GoogleAccountCode;
-			r.PageUrl = pageView.Url;
-
-			return r;
+			return new TrackingRequest {
+				PageDomain = pageView.DomainName,
+				PageTitle = pageView.PageTitle,
+				PageUrl = pageView.Url,
+				AnalyticsAccountCode = googleAnalyticsCode
+			};
 		}
-
 
 		/// <summary>
 		/// Builds the tracking request from a Google Event.
 		/// </summary>
 		/// <param name="googleEvent">The google event.</param>
 		/// <returns></returns>
-		public TrackingRequest BuildRequest(GaDotNet.Common.Data.GoogleEvent googleEvent)
+		public TrackingRequest BuildRequest (GoogleEvent googleEvent)
 		{
-			var r = new TrackingRequest();
-			
-			r.AnalyticsAccountCode = ConfigurationSettings.GoogleAccountCode;
-			r.TrackingEvent = googleEvent;
-			
-			return r;
+			return new TrackingRequest {
+				TrackingEvent = googleEvent,
+				PageDomain = googleEvent.DomainName,
+				AnalyticsAccountCode = googleAnalyticsCode
+			};
 		}
 
 		/// <summary>
@@ -88,14 +87,12 @@ namespace GaDotNet.Common.Helpers
 		/// </summary>
 		/// <param name="googleTransaction">The google transaction.</param>
 		/// <returns></returns>
-		public TrackingRequest BuildRequest(GaDotNet.Common.Data.GoogleTransaction googleTransaction)
+		public TrackingRequest BuildRequest (GoogleTransaction googleTransaction)
 		{
-			var r = new TrackingRequest();
-
-			r.AnalyticsAccountCode = ConfigurationSettings.GoogleAccountCode;
-			r.TrackingTransaction = googleTransaction;
-
-			return r;
+			return new TrackingRequest {
+				AnalyticsAccountCode = googleAnalyticsCode,
+				TrackingTransaction = googleTransaction
+			};
 		}
 	}
 }

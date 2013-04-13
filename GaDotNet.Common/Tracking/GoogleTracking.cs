@@ -17,111 +17,72 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
 using System.Web;
-using GaDotNet.Common.Data;
 using GaDotNet.Common.Data;
 using GaDotNet.Common.Helpers;
 
 namespace GaDotNet.Common
 {
-	public class GoogleTracking
+	public static class GoogleTracking
 	{
 		/// <summary>
 		/// Tracks the page view  with GA and stream a GIF image
 		/// </summary>
 		/// <param name="context">The context.</param>
-		/// <param name="urlToTrack">The URL to track.</param>
-		public static void TrackPageViewWithImage(HttpContext context)
+		/// <param name="analyticsCode">Analytics code in the form UA-XXXXXX-X</param>
+		public static void TrackPageViewWithImage (HttpContext context, string analyticsCode)
 		{
-			//build request
-			TrackingRequest request = new RequestFactory().BuildRequest(context);
+			TrackingRequest request = new RequestFactory (analyticsCode)
+				.BuildRequest(context);
 
 			FireTrackingEvent(request);
-
-			//context.Response.Write(request.TrackingGifURL);
-
 			ShowTrackingImage(context);
 
 		}
+
 		/// <summary>
 		/// Tracks the page view and streams a GIF image.
 		/// </summary>
 		/// <param name="context">The context.</param>
 		/// <param name="pageView">The page view.</param>
-		public static void TrackPageViewWithImage(HttpContext context, GooglePageView pageView)
+		/// <param name="analyticsCode">Analytics code in the form UA-XXXXXX-X</param>
+		public static void TrackPageViewWithImage (HttpContext context, GooglePageView pageView, string analyticsCode)
 		{
-			//build request
-			TrackingRequest request = new RequestFactory().BuildRequest(pageView);
+			TrackingRequest request = new RequestFactory (analyticsCode)
+				.BuildRequest(pageView);
 
 			FireTrackingEvent(request);
-			//context.Response.Write(request.TrackingGifURL);
 			ShowTrackingImage(context);
 		}
 
-		private static void ShowTrackingImage(HttpContext context)
+		private static void ShowTrackingImage (HttpContext context)
 		{
 			context.Response.ContentType = "image/gif";
 			context.Response.TransmitFile(context.Server.MapPath("spacer.gif"));
 			context.Response.End();
-
 		}
+
 		/// <summary>
 		/// Fires the tracking event with Google Analytics
 		/// </summary>
 		/// <param name="request">The request.</param>
-		public static void FireTrackingEvent(TrackingRequest request)
+		public static void FireTrackingEvent (TrackingRequest request)
 		{
-            WebRequest requestForGaGif = WebRequest.Create(request.TrackingGifUri);
-            requestForGaGif.BeginGetResponse(r =>
-            {
-                try
-                {
-                    var reponse = requestForGaGif.EndGetResponse(r);
-                    //ignore response
-                }
-                catch
-                {
-                    //suppress error
-                }
+			//Create a request for the Google Analytics GIF
+            var gifRequest = WebRequest
+				.Create(request.TrackingGifUri);
+
+            gifRequest.BeginGetResponse(r =>
+			{
+				//ignore the response
+	            try { gifRequest.EndGetResponse (r); }
+                catch {
+					//suppress error
+				}
             }, null);
-		}
-
-
-        private static void ResponseCallback(IAsyncResult result)
-        {
-           
-        }
-
-
-      
-        }
-
-
-
-
-
-        public class RequestState
-        {
-            public int BufferSize { get; private set; }
-            public StringBuilder ResponseContent { get; set; }
-            public byte[] BufferRead { get; set; }
-            public HttpWebRequest Request { get; set; }
-            public HttpWebResponse Response { get; set; }
-            public Stream ResponseStream { get; set; }
-
-            public RequestState()
-            {
-                BufferSize = 1024;
-                BufferRead = new byte[BufferSize];
-                ResponseContent = new StringBuilder();
-                Request = null;
-                ResponseStream = null;
-            }
-        }
-
+		}        
+	}
 }

@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="GoogleAnalyticsDotNet.HandlerDemo.Demo" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="GaDotNet.HandlerDemo.Demo" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -25,6 +25,16 @@
 					<table>
 						<tr>
 							<td valign="top">
+								Domain Name:
+							</td>
+							<td>
+								<asp:TextBox ID="txtPageDomainName" runat="server" ValidationGroup="page"></asp:TextBox>
+								<asp:RequiredFieldValidator ID="requiredPageDomain" runat="server" ValidationGroup="page" ControlToValidate="txtPageDomainName">*</asp:RequiredFieldValidator>
+								<br />
+								Needs to be your GA account domain
+							</td>
+						</tr><tr>
+							<td valign="top">
 								Page Title
 							</td>
 							<td>
@@ -34,23 +44,13 @@
 								Your page title
 							</td>
 						</tr>
-						<tr>
-							<td valign="top">
-								Domain Name:
-							</td>
-							<td>
-								<asp:TextBox ID="txtPageDomainName" runat="server"></asp:TextBox>
-								<asp:RequiredFieldValidator ID="requiredPageDomain" runat="server" ValidationGroup="page" ControlToValidate="txtPageDomainName">*</asp:RequiredFieldValidator>
-								<br />
-								Needs to be your GA account domain
-							</td>
-						</tr>
+						
 						<tr>
 							<td valign="top">
 								Page URL
 							</td>
 							<td>
-								<asp:TextBox ID="txtPageURL" runat="server"></asp:TextBox>
+								<asp:TextBox ID="txtPageURL" runat="server" ValidationGroup="page"></asp:TextBox>
 								<asp:RequiredFieldValidator ID="requiredPageURL" runat="server" ValidationGroup="page" ControlToValidate="txtPageURL">*</asp:RequiredFieldValidator>
 								<br />
 								relative to root (ie. /test.aspx)
@@ -61,20 +61,33 @@
 								&nbsp;
 							</td>
 							<td>
-								<asp:Button ID="btnPageSubmit" runat="server" Text="Send to GA" OnClick="btnPageSubmit_Click" />
+								<asp:Button ID="btnPageSubmit" runat="server" Text="Send to GA" 
+									OnClick="btnPageSubmit_Click" ValidationGroup="page" />
 							</td>
 						</tr>
 					</table>
 				</td>
-				<%--				<td>
-					<b>Submit Event</b><br />
+								<td>
+					<b>Submit event</b><br />
 					<table>
+					<tr>
+							<td valign="top">
+								Domain Name:
+							</td>
+							<td>
+								<asp:TextBox ID="txtEventDomain" runat="server" ValidationGroup="event"></asp:TextBox>
+								<asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ValidationGroup="event" ControlToValidate="txtEventDomain">*</asp:RequiredFieldValidator>
+								<br />
+								Needs to be your GA account domain
+							</td>
+						</tr>
 						<tr>
 							<td>
 								Category
 							</td>
 							<td>
-								<asp:TextBox ID="txtEventCategory" runat="server"></asp:TextBox>
+								<asp:TextBox ID="txtEventCategory" runat="server" ValidationGroup="event"></asp:TextBox>
+							<asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ValidationGroup="event" ControlToValidate="txtEventCategory">*</asp:RequiredFieldValidator>
 							</td>
 						</tr>
 						<tr>
@@ -82,7 +95,8 @@
 								Action
 							</td>
 							<td>
-								<asp:TextBox ID="txtEventAction" runat="server"></asp:TextBox>
+								<asp:TextBox ID="txtEventAction" runat="server" ValidationGroup="event"></asp:TextBox>
+							<asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" ValidationGroup="event" ControlToValidate="txtEventAction">*</asp:RequiredFieldValidator>
 							</td>
 						</tr>
 						<tr>
@@ -90,7 +104,7 @@
 								Label
 							</td>
 							<td>
-								<asp:TextBox ID="txtEventLabel" runat="server"></asp:TextBox>
+								<asp:TextBox ID="txtEventLabel" runat="server" ValidationGroup="event"></asp:TextBox>
 							</td>
 						</tr>
 						<tr>
@@ -98,7 +112,7 @@
 								Value
 							</td>
 							<td>
-								<asp:TextBox ID="txtEventValue" runat="server"></asp:TextBox>
+								<asp:TextBox ID="txtEventValue" runat="server" ValidationGroup="event"></asp:TextBox>
 								<br />
 								<a href="http://code.google.com/apis/analytics/docs/gaJS/gaJSApiEventTracking.html">
 								Has to be Int </a>
@@ -110,11 +124,12 @@
 							</td>
 							<td>
 								<asp:Button ID="btnEventSubmit" runat="server" Text="Send to GA" 
-									onclick="btnEventSubmit_Click" />
+									onclick="btnEventSubmit_Click" ValidationGroup="event" />
 							</td>
 						</tr>
 					</table>
 				</td>
+				<%--
 				<td>
 					<b>Submit transaction</b><br />
 					<table>
