@@ -140,7 +140,7 @@ namespace GaDotNet.Common.Data
 			addKvp ("utmul", "-");                  // user language
 			addKvp ("utmje", "0");                  // java enabled or not
 			addKvp ("utmfl", "-");                  // user flash version
-			addEsc ("utmdt", pageTitleSafe);		// page title
+			addKvp ("utmdt", pageTitleSafe);		// page title
 			addKvp ("utmhid", utmhidRandom);		// page title
 			addKvp ("utmr", "-");					// referrer URL
 			addKvp ("utmp", PageUrl);				// document page URL (relative to root)
