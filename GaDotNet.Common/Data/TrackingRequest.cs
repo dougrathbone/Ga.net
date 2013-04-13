@@ -43,6 +43,7 @@ namespace GaDotNet.Common.Data
 		public GoogleEvent TrackingEvent;
 		public GoogleTransaction TrackingTransaction;
 
+		private delegate void Action<T1, T2> (T1 arg1, T2 arg2);
 		private readonly string timeStampCurrent = GoogleHashHelper.ConvertToUnixTimestamp (DateTime.Now).ToString ();
 		private const string visitCount = "2";
 
