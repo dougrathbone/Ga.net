@@ -18,6 +18,7 @@
 */
 
 using System.Web;
+using GaDotNet.Common.Data;
 
 namespace GaDotNet.Common
 {
@@ -48,8 +49,8 @@ namespace GaDotNet.Common
 			// "domain" = Domain (usually facebook.com)
 			// "ua" = Google analytics account code
 			// "url" = URL of page to track (format is from root: "/default.htm")
-
-			GoogleTracking.TrackPageViewWithImage(context);
+			var code = ConfigurationSettings.GoogleAccountCode;
+			GoogleTracking.TrackPageViewWithImage (context, code);
 		}
 	}
 }

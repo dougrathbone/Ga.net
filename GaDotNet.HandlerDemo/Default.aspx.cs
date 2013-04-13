@@ -42,7 +42,7 @@ namespace GaDotNet.HandlerDemo
 				txtPageDomainName.Text,
 				txtPageURL.Text);
 
-			TrackingRequest request = new RequestFactory()
+			TrackingRequest request = new RequestFactory (ConfigurationSettings.GoogleAccountCode)
 				.BuildRequest (pageView);
 			GoogleTracking.FireTrackingEvent(request);
 
@@ -63,7 +63,7 @@ namespace GaDotNet.HandlerDemo
 				txtEventLabel.Text,
 				eventValue);
 
-			TrackingRequest request = new RequestFactory()
+			TrackingRequest request = new RequestFactory (ConfigurationSettings.GoogleAccountCode)
 				.BuildRequest (eventToTrack);
 			GoogleTracking.FireTrackingEvent(request);
 

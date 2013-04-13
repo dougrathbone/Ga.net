@@ -27,6 +27,13 @@ namespace GaDotNet.Common.Helpers
 	/// </summary>
 	public class RequestFactory
 	{
+		private readonly string googleAnalyticsCode;
+
+		public RequestFactory(string googleAnalyticsCode)
+		{
+			this.googleAnalyticsCode = googleAnalyticsCode;
+		}
+
 		/// <summary>
 		/// Builds the tracking request.
 		/// </summary>
@@ -36,7 +43,7 @@ namespace GaDotNet.Common.Helpers
 		public TrackingRequest BuildRequest (HttpContext context)
 		{
 			var code = context.Request.QueryString["ua"]
-				?? ConfigurationSettings.GoogleAccountCode;
+				?? googleAnalyticsCode;
 
 			return new TrackingRequest {
 				PageTitle = context.Request.QueryString["pagetitle"],
@@ -53,16 +60,13 @@ namespace GaDotNet.Common.Helpers
 		/// <returns></returns>
 		public TrackingRequest BuildRequest (GooglePageView pageView)
 		{
-			var code = ConfigurationSettings.GoogleAccountCode;
-
 			return new TrackingRequest {
 				PageDomain = pageView.DomainName,
 				PageTitle = pageView.PageTitle,
 				PageUrl = pageView.Url,
-				AnalyticsAccountCode = code
+				AnalyticsAccountCode = googleAnalyticsCode
 			};
 		}
-
 
 		/// <summary>
 		/// Builds the tracking request from a Google Event.
@@ -71,12 +75,10 @@ namespace GaDotNet.Common.Helpers
 		/// <returns></returns>
 		public TrackingRequest BuildRequest (GoogleEvent googleEvent)
 		{
-			var code = ConfigurationSettings.GoogleAccountCode;
-
 			return new TrackingRequest {
 				TrackingEvent = googleEvent,
 				PageDomain = googleEvent.DomainName,
-				AnalyticsAccountCode = code
+				AnalyticsAccountCode = googleAnalyticsCode
 			};
 		}
 
@@ -88,7 +90,7 @@ namespace GaDotNet.Common.Helpers
 		public TrackingRequest BuildRequest (GoogleTransaction googleTransaction)
 		{
 			return new TrackingRequest {
-				AnalyticsAccountCode = ConfigurationSettings.GoogleAccountCode,
+				AnalyticsAccountCode = googleAnalyticsCode,
 				TrackingTransaction = googleTransaction
 			};
 		}

@@ -32,9 +32,10 @@ namespace GaDotNet.Common
 		/// Tracks the page view  with GA and stream a GIF image
 		/// </summary>
 		/// <param name="context">The context.</param>
-		public static void TrackPageViewWithImage(HttpContext context)
+		/// <param name="analyticsCode">Analytics code in the form UA-XXXXXX-X</param>
+		public static void TrackPageViewWithImage (HttpContext context, string analyticsCode)
 		{
-			TrackingRequest request = new RequestFactory()
+			TrackingRequest request = new RequestFactory (analyticsCode)
 				.BuildRequest(context);
 
 			FireTrackingEvent(request);
@@ -46,9 +47,10 @@ namespace GaDotNet.Common
 		/// </summary>
 		/// <param name="context">The context.</param>
 		/// <param name="pageView">The page view.</param>
-		public static void TrackPageViewWithImage(HttpContext context, GooglePageView pageView)
+		/// <param name="analyticsCode">Analytics code in the form UA-XXXXXX-X</param>
+		public static void TrackPageViewWithImage (HttpContext context, GooglePageView pageView, string analyticsCode)
 		{
-			TrackingRequest request = new RequestFactory()
+			TrackingRequest request = new RequestFactory (analyticsCode)
 				.BuildRequest(pageView);
 
 			FireTrackingEvent(request);
