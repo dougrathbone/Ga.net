@@ -149,7 +149,7 @@ namespace GaDotNet.Common.Data
 
 			if (TrackingEvent != null) {
 				//taken from http://code.google.com/apis/analytics/docs/tracking/gaTrackingTroubleshooting.html
-				var eventString = String.Format ("5({0}*{1}*{2})({3}",
+				var eventString = String.Format ("5({0}*{1}*{2})({3})",
 					TrackingEvent.Category,
 					TrackingEvent.Action,
 					TrackingEvent.Label,
